@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h2>To-Do List</h2>
+
+    <!-- Controls -->
+    <div class="controls">
+        <input type="text" id="taskInput" placeholder="Enter task">
+        <select id="priorityInput">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+        </select>
+        <button id="addBtn">Add</button>
+        <button id="clearBtn">Clear All</button>
+        <input type="text" id="searchInput" placeholder="Search tasks..." class="search">
+        
+    </div>
+
+    <!-- Task List -->
+    <ul id="taskList"></ul>
+
+
+    <div class="footer">
+        <span id="totalCount" class="filter">Total: 0</span> |
+        <span id="doneCount" class="filter">Done: 0</span> |
+        <span id="pendingCount" class="filter">Pending: 0</span>
+    </div>
+
+    <div class="footer priority-footer">
+        <span id="lowCount" class="filter">Low: 0</span> |
+        <span id="mediumCount" class="filter">Medium: 0</span> |
+        <span id="highCount" class="filter">High: 0</span>
+    </div>
+
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
