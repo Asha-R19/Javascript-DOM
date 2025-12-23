@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DOM To-Do List</title>
+    <style>
+        body {
+            margin: 30px;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f7f7f7;
+        }
+
+        h2 {
+            margin-bottom: 15px;
+        }
+
+        input {
+            padding: 8px;
+            width: 220px;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 7px 12px;
+            margin-left: 5px;
+            font-size: 13px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        ul {
+            margin-top: 20px;
+            padding-left: 0;
+        }
+
+        li {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            background: white;
+            padding: 8px 10px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+
+        span {
+            font-size: 25px;
+            min-width: 200px;
+        }
+
+        .status {
+            margin-left: 15px;
+            padding: 4px;
+        }
+
+        .edit-btn {
+            margin-left: 15px;
+            background-color: #2196F3;
+        }
+
+        .edit-btn:hover {
+            background-color: #1976D2;
+        }
+
+        p {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h2>To-Do List</h2>
+
+<input type="text" id="taskInput" placeholder="Enter task">
+<button onclick="addTask()">Add Task</button>
+<button onclick="removeTask()">Remove Last Task</button>
+
+<ul id="taskList"></ul>
+
+<script>
+
+function addTask() {
+    let input = document.querySelector("#taskInput");
+    let text = input.value;
+
+    if (text === "") {
+        alert("Please enter a task");
+        return;
+    }
+
+    let li = document.createElement("li");
+
+    let span = document.createElement("span");
+    span.innerHTML = text;
+
+    span.onmouseover = function () {
+        this.style.color = "blue";
+    };
+
+    span.onmouseout = function () {
+        this.style.color = "black";
+    };
+
+    let status = document.createElement("select");
+    status.className = "status";
+
+    let opt1 = document.createElement("option");
+    opt1.value = "pending";
+    opt1.text = "Pending";
+
+    let opt2 = document.createElement("option");
+    opt2.value = "done";
+    opt2.text = "Done";
+
+    let opt3 = document.createElement("option");
+    opt3.value = "not done";
+    opt3.text = "Not Done";
+
+    status.append(opt1);
+    status.append(opt2);
+    status.appendChild(opt3);
+
+    status.onchange = function () {
+        if (this.value === "done") {
+            span.classList.add("done");
+        } else {
+            span.classList.remove("done");
+        }
+    };
+
+    let editBtn = document.createElement("button");
+    editBtn.innerHTML = "Edit";
+    editBtn.className = "edit-btn";
+
+    editBtn.onclick = function () {
+        let newText = prompt("Edit task:", span.innerHTML);
+        if (newText !== null && newText !== "") {
+            span.innerHTML = newText;
+        }
+    };
+
+    li.append(span);
+    li.append(status);
+    li.append(editBtn);
+
+    document.querySelector("#taskList").append(li);
+    input.value = "";
+
+    updateCount();
+}
+
+// remove last task (UNCHANGED)
+function removeTask() {
+    let ul = document.getElementById("taskList");
+    if (ul.lastElementChild) {
+        ul.removeChild(ul.lastElementChild);
+        updateCount();
+    }
+}
+
+// update task count
+function updateCount() {
+    let n = document.querySelector("#taskList").children.length;
+    document.querySelector("#count").innerHTML = n;
+}
+
+</script>
+
+<p>Total Tasks: <span id="count">0</span></p>
+
+</body>
+</html>
