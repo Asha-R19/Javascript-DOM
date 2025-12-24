@@ -66,12 +66,24 @@ function clearAll() {
 function searchTask() {
     let filter = document.querySelector("#searchInput").value.toLowerCase();
     let tasks = document.querySelectorAll("#taskList li");
+    let found = false;
 
     tasks.forEach(task => {
         let text = task.querySelector("span").innerText.toLowerCase();
-        task.style.display = text.includes(filter) ? "flex" : "none";
+
+        if (text.includes(filter)) {
+            task.style.display = "flex";
+            found = true;
+        } else {
+            task.style.display = "none";
+        }
     });
+
+    // show / hide "Task not found"
+    document.querySelector("#noTaskMsg").style.display =
+        found ? "none" : "block";
 }
+
 
 function updateCounts() {
     const tasks = document.querySelectorAll("#taskList li");
@@ -108,8 +120,6 @@ document.querySelector("#pendingCount").addEventListener("click", showPending);
 document.querySelector("#lowCount").addEventListener("click", () => filterByPriority("low"));
 document.querySelector("#mediumCount").addEventListener("click", () => filterByPriority("medium"));
 document.querySelector("#highCount").addEventListener("click", () => filterByPriority("high"));
-
-
 
 function showAll() {
     document.querySelectorAll("#taskList li").forEach(li => {
