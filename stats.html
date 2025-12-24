@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Statistics</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h3>Menu</h3>
+        <a href="index.html">📝 Dashboard</a>
+        <a href="stats.html">📊 Task Stats</a>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <h2>📊 Task Statistics</h2>
+
+        <!-- STAT BOXES -->
+        <div class="stats-container">
+
+            <!-- TOTAL -->
+            <div class="stat-card">
+                <h3>Total Tasks</h3>
+                <p class="clickable" onclick="showAll()">
+                    Total: <span id="total"></span>
+                </p>
+            </div>
+
+            <!-- STATUS -->
+            <div class="stat-card">
+                <h3>Task Status</h3>
+                <p class="clickable" onclick="filterStatus('pending')">
+                    Pending: <span id="pending"></span>
+                </p>
+                <p class="clickable" onclick="filterStatus('done')">
+                    Done: <span id="done"></span>
+                </p>
+            </div>
+
+            <!-- PRIORITY -->
+            <div class="stat-card">
+                <h3>Task Priority</h3>
+                <p class="clickable" onclick="filterPriority('low')">
+                    Low: <span id="low"></span>
+                </p>
+                <p class="clickable" onclick="filterPriority('medium')">
+                    Medium: <span id="medium"></span>
+                </p>
+                <p class="clickable" onclick="filterPriority('high')">
+                    High: <span id="high"></span>
+                </p>
+            </div>
+
+        </div>
+
+        <!-- TABLE -->
+        <h3 style="margin-top:20px;">📋 Task Details</h3>
+
+        <table class="task-table">
+            <thead>
+                <tr>
+                    <th>Task</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                </tr>
+            </thead>
+            <tbody id="taskBody"></tbody>
+        </table>
+
+        <p id="noTaskMsg" style="display:none;">No tasks found</p>
+
+    </div>
+</div>
+
+<script src="stats.js"></script>
+</body>
+</html>

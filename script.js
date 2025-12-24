@@ -1,150 +1,170 @@
-document.querySelector("#addBtn").addEventListener("click", addTask);
-document.querySelector("#clearBtn").addEventListener("click", clearAll);
-document.querySelector("#searchInput").addEventListener("keyup", searchTask);
+const taskInput = document.getElementById("taskInput");
+const priorityInput = document.getElementById("priorityInput");
+const dueDateInput = document.getElementById("dueDate");
+const taskList = document.getElementById("taskList");
+const searchInput = document.getElementById("searchInput");
+const noTaskMsg = document.getElementById("noTaskMsg");
 
+document.getElementById("addBtn").onclick = addTask;
+document.getElementById("clearBtn").onclick = clearAll;
+searchInput.onkeyup = searchTask;
+
+/* ADD TASK */
 function addTask() {
-    let taskText = document.querySelector("#taskInput").value;
-    let priority = document.querySelector("#priorityInput").value;
-
-    if (taskText === "") {
-        alert("Enter a task");
+    if (!taskInput.value || !priorityInput.value || !dueDateInput.value) {
+        alert("Fill all fields");
         return;
     }
 
-    let li = document.createElement("li");
-    li.classList.add(priority);
+    const li = document.createElement("li");
+    li.classList.add(priorityInput.value);
 
-    let span = document.createElement("span");
-    span.innerHTML = taskText;
+    const taskSpan = document.createElement("span");
+    taskSpan.innerText = taskInput.value;
 
-    let status = document.createElement("select");
+    const dateSpan = document.createElement("span");
+    dateSpan.innerText = dueDateInput.value;
+
+    const status = document.createElement("select");
     status.innerHTML = `
         <option value="pending">Pending</option>
         <option value="done">Done</option>
     `;
 
-    status.onchange = function () {
-        span.classList.toggle("done", this.value === "done");
-        updateCounts();
-    };
+    const prioritySpan = document.createElement("span");
+    prioritySpan.innerText = priorityInput.value;
+    prioritySpan.className = "priority-text";
 
-     // Edit button
-    let editBtn = document.createElement("button");
+    const editBtn = document.createElement("button");
     editBtn.innerText = "Edit";
     editBtn.className = "edit-btn";
 
-    editBtn.onclick = function () {
-        let newText = prompt("Edit task:", span.innerText);
+    editBtn.onclick = () => {
+        if (editBtn.disabled) return;
+        const newText = prompt("Edit task:", taskSpan.innerText);
         if (newText) {
-            span.innerText = newText;
+            taskSpan.innerText = newText;
+            saveTasks();
         }
     };
 
-    status.onchange = function () {
-        if (this.value === "done") {
-            span.classList.add("done");
+    const deleteBtn = document.createElement("button");
+    deleteBtn.innerText = "Delete";
+    deleteBtn.className = "delete-btn";
+    deleteBtn.onclick = () => {
+        if (confirm("Delete task?")) {
+            li.remove();
+            saveTasks();
+        }
+    };
+
+    const actions = document.createElement("div");
+    actions.className = "actions";
+    actions.append(editBtn, deleteBtn);
+
+    li.append(taskSpan, dateSpan, status, prioritySpan, actions);
+    taskList.append(li);
+
+    applyOverdue(li, dateSpan.innerText, status.value);
+
+    status.onchange = () => {
+        if (status.value === "done") {
+            if (!confirm("Mark task as completed?")) {
+                status.value = "pending";
+                return;
+            }
+            taskSpan.classList.add("done");
             editBtn.disabled = true;
+            editBtn.classList.add("edit-disabled");
+            li.classList.remove("overdue");
         } else {
-            span.classList.remove("done");
+            taskSpan.classList.remove("done");
             editBtn.disabled = false;
+            editBtn.classList.remove("edit-disabled");
+            applyOverdue(li, dateSpan.innerText, "pending");
         }
-        updateCounts();
+        saveTasks();
     };
 
-    li.append(span, status, editBtn);
-    document.querySelector("#taskList").append(li);
+    taskInput.value = "";
+    dueDateInput.value = "";
+    priorityInput.value = "";
 
-    document.querySelector("#taskInput").value = "";
-    updateCounts();
+    saveTasks();
 }
 
+/* OVERDUE CHECK */
+function applyOverdue(li, dueDate, status) {
+    const today = new Date();
+    today.setHours(0,0,0,0);
+
+    const due = new Date(dueDate);
+    due.setHours(0,0,0,0);
+
+    if (status === "pending" && due < today) {
+        li.classList.add("overdue");
+    } else {
+        li.classList.remove("overdue");
+    }
+}
+
+/* CLEAR ALL */
 function clearAll() {
-    document.querySelector("#taskList").innerHTML = "";
-    updateCounts();
+    taskList.innerHTML = "";
+    saveTasks();
 }
 
+/* SEARCH */
 function searchTask() {
-    let filter = document.querySelector("#searchInput").value.toLowerCase();
-    let tasks = document.querySelectorAll("#taskList li");
+    const val = searchInput.value.toLowerCase();
     let found = false;
 
-    tasks.forEach(task => {
-        let text = task.querySelector("span").innerText.toLowerCase();
-
-        if (text.includes(filter)) {
-            task.style.display = "flex";
+    document.querySelectorAll("#taskList li").forEach(li => {
+        const text = li.children[0].innerText.toLowerCase();
+        if (text.includes(val)) {
+            li.style.display = "grid";
             found = true;
         } else {
-            task.style.display = "none";
+            li.style.display = "none";
         }
     });
 
-    // show / hide "Task not found"
-    document.querySelector("#noTaskMsg").style.display =
-        found ? "none" : "block";
+    noTaskMsg.style.display = found ? "none" : "block";
 }
 
-
-function updateCounts() {
-    const tasks = document.querySelectorAll("#taskList li");
-
-    const done = document.querySelectorAll("#taskList .done").length;
-
-    const low = document.querySelectorAll("#taskList li.low").length;
-    const medium = document.querySelectorAll("#taskList li.medium").length;
-    const high = document.querySelectorAll("#taskList li.high").length;
-
-    document.querySelector("#totalCount").innerText =
-        "Total: " + tasks.length;
-
-    document.querySelector("#doneCount").innerText =
-        "Done: " + done;
-
-    document.querySelector("#pendingCount").innerText =
-        "Pending: " + (tasks.length - done);
-
-    document.querySelector("#lowCount").innerText =
-        "Low: " + low;
-
-    document.querySelector("#mediumCount").innerText =
-        "Medium: " + medium;
-
-    document.querySelector("#highCount").innerText =
-        "High: " + high;
-}
-
-document.querySelector("#totalCount").addEventListener("click", showAll);
-document.querySelector("#doneCount").addEventListener("click", showDone);
-document.querySelector("#pendingCount").addEventListener("click", showPending);
-
-document.querySelector("#lowCount").addEventListener("click", () => filterByPriority("low"));
-document.querySelector("#mediumCount").addEventListener("click", () => filterByPriority("medium"));
-document.querySelector("#highCount").addEventListener("click", () => filterByPriority("high"));
-
-function showAll() {
+/* SAVE */
+function saveTasks() {
+    const tasks = [];
     document.querySelectorAll("#taskList li").forEach(li => {
-        li.style.display = "flex";
+        tasks.push({
+            text: li.children[0].innerText,
+            dueDate: li.children[1].innerText,
+            status: li.querySelector("select").value,
+            priority: li.classList.contains("high") ? "high" :
+                      li.classList.contains("medium") ? "medium" : "low"
+        });
     });
+    localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
-function showDone() {
-    document.querySelectorAll("#taskList li").forEach(li => {
-        const span = li.querySelector("span");
-        li.style.display = span.classList.contains("done") ? "flex" : "none";
-    });
-}
+/* LOAD */
+window.onload = () => {
+    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    tasks.forEach(t => {
+        taskInput.value = t.text;
+        priorityInput.value = t.priority;
+        dueDateInput.value = t.dueDate;
+        addTask();
 
-function showPending() {
-    document.querySelectorAll("#taskList li").forEach(li => {
-        const span = li.querySelector("span");
-        li.style.display = span.classList.contains("done") ? "none" : "flex";
-    });
-}
+        const last = taskList.lastChild;
+        last.querySelector("select").value = t.status;
 
-function filterByPriority(level) {
-    document.querySelectorAll("#taskList li").forEach(li => {
-        li.style.display = li.classList.contains(level)
-            ? "flex"
-            : "none";
+        if (t.status === "done") {
+            last.children[0].classList.add("done");
+            last.querySelector(".edit-btn").disabled = true;
+            last.querySelector(".edit-btn").classList.add("edit-disabled");
+        }
+
+        applyOverdue(last, t.dueDate, t.status);
     });
-}
+};

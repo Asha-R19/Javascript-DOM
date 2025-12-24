@@ -2,46 +2,54 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To-Do List</title>
+    <title>To Do List</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="container">
+<div class="layout">
 
-    <h2>To-Do List</h2>
-
-    <!-- Controls -->
-    <div class="controls">
-        <input type="text" id="taskInput" placeholder="Enter task">
-        <select id="priorityInput">
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-        </select>
-        <button id="addBtn">Add</button>
-        <button id="clearBtn">Clear All</button>
-        <input type="text" id="searchInput" placeholder="Search tasks..." class="search">
-        
+    <div class="sidebar">
+        <h3>Menu</h3>
+        <a href="index.html">📝 Dashboard</a>
+        <a href="stats.html">📊 Tech Stats</a>
     </div>
 
-    <!-- Task List -->
-    <ul id="taskList"></ul>
-    <p id="noTaskMsg" style="display:none; text-align:center; color:red;">Task not found</p>
+    <div class="content">
 
-    <div class="footer">
-        <span id="totalCount" class="filter">Total: 0</span> |
-        <span id="doneCount" class="filter">Done: 0</span> |
-        <span id="pendingCount" class="filter">Pending: 0</span>
+        <h2>📝 To-Do List</h2>
+
+        <div class="controls-row">
+            <div class="controls">
+                <input type="text" id="taskInput" placeholder="Task">
+                <input type="date" id="dueDate">
+                <select id="priorityInput">
+                    <option value="">Priority</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+
+                <button id="addBtn">Add</button>
+                <button id="clearBtn">Clear</button>
+            </div>
+
+            <input type="text" id="searchInput" placeholder="Search task">
+        </div>
+
+        <div class="list-header">
+            <span>Task</span>
+            <span>Due Date</span>
+            <span>Status</span>
+            <span>Priority</span>
+            <span>Actions</span>
+        </div>
+
+        <ul id="taskList"></ul>
+
+        <p id="noTaskMsg">Task not found</p>
+
     </div>
-
-    <div class="footer priority-footer">
-        <span id="lowCount" class="filter">Low: 0</span> |
-        <span id="mediumCount" class="filter">Medium: 0</span> |
-        <span id="highCount" class="filter">High: 0</span>
-    </div>
-
 </div>
 
 <script src="script.js"></script>
